@@ -1,0 +1,681 @@
+/* ربط خط Cairo من جوجل */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
+/* المتغيرات (يمكنك تغيير الألوان الرئيسية هنا) */
+:root {
+    --primary-bg: #1A2B3C; /* أزرق داكن جداً وفخم */
+    --secondary-bg: #2B3D4F; /* أزرق داكن أفتح قليلاً للعناصر */
+    --text-light: #E0E6EB; /* نص فاتح جداً */
+    --text-dark: #A8B0B8; /* نص رمادي داكن للقراءة */
+    --accent-gold: #C39A3F; /* لمسة ذهبية/نحاسية راقية */
+    --accent-blue: #4A90E2; /* أزرق هادئ للعناصر التفاعلية */
+    
+    /* ظلال ثلاثية الأبعاد */
+    --shadow-deep-dark: rgba(0, 0, 0, 0.6);
+    --shadow-medium-dark: rgba(0, 0, 0, 0.4);
+    --shadow-light-dark: rgba(0, 0, 0, 0.2);
+    --shadow-soft-light: rgba(255, 255, 255, 0.08);
+    --shadow-lighter-light: rgba(255, 255, 255, 0.03);
+
+    /* ألوان الأحجار */
+    --tile-bg-light: #F8F8F8;
+    --tile-bg-dark: #E0E0E0;
+    --tile-border: #7F8C8D; /* رمادي متوسط لحدود الحجر */
+    --dot-color: #2C3E50; /* أزرق داكن للنقاط */
+}
+
+/* الأنماط الأساسية */
+body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, #101F2B 100%); /* تدرج لوني عميق */
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    direction: rtl;
+    text-align: center;
+    overflow-x: hidden;
+    line-height: 1.6;
+    perspective: 1200px; /* لتمكين تأثيرات 3D بشكل أفضل */
+}
+
+.app-container {
+    background: var(--secondary-bg);
+    border-radius: 25px;
+    box-shadow: 
+        0 25px 70px var(--shadow-deep-dark), /* ظل سفلي كبير وعميق */
+        0 0 0 1px rgba(255, 255, 255, 0.05); /* حد رفيع جداً لإبراز الحواف */
+    padding: 60px 80px; /* بادينج أكبر */
+    width: 90%;
+    max-width: 950px; /* عرض أقصى أكبر */
+    backdrop-filter: blur(12px); /* ضبابية أكثر */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: all 0.6s ease-in-out;
+    transform-style: preserve-3d; /* مهم لعمق العناصر الداخلية */
+    position: relative; /* لتموضع بعض التأثيرات إذا لزم الأمر */
+}
+
+/* العناوين والأيقونات */
+.app-title {
+    font-size: 3.5em;
+    color: var(--accent-gold); /* لون ذهبي فاخر */
+    margin-bottom: 25px;
+    text-shadow: 0 5px 10px var(--shadow-medium-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.logo-icon {
+    font-size: 0.8em;
+    color: var(--text-light);
+    text-shadow: none; /* إزالة الظل من الأيقونة */
+}
+
+.tagline {
+    font-size: 1.4em;
+    color: var(--text-dark);
+    margin-bottom: 50px;
+    font-weight: 400;
+}
+
+.section-title {
+    font-size: 2.6em;
+    color: var(--text-light);
+    margin-bottom: 40px;
+    text-shadow: 0 3px 6px var(--shadow-medium-dark);
+}
+
+.highlight-name {
+    color: var(--accent-gold);
+    font-weight: 700;
+    text-shadow: 0 0 12px rgba(195, 154, 63, 0.6);
+}
+
+/* الأزرار (تصميم 3D-ish مع عمق) */
+button {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(145deg, #3A4C60, #2C3A4B); /* تدرج أزرق/رمادي راقي */
+    color: var(--text-light);
+    border: none;
+    padding: 20px 45px;
+    margin: 18px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 1.4em;
+    font-weight: 700;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* انتقال سلس */
+    box-shadow: 
+        8px 8px 18px var(--shadow-medium-dark),
+        -8px -8px 18px var(--shadow-soft-light); /* ظلال للعمق */
+    outline: none;
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d; /* للأزرار نفسها */
+}
+
+button::before { /* تأثير ضوء خفيف عند الضغط أو التحويم */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    transition: transform 0.3s ease;
+    transform: translateX(-100%) rotateY(20deg); /* تأثير ضوء يمر */
+}
+
+button:hover::before {
+    transform: translateX(0) rotateY(0deg);
+}
+
+button:hover {
+    transform: translateY(-7px) translateZ(5px); /* رفع الزر للأمام */
+    box-shadow: 
+        12px 12px 25px var(--shadow-deep-dark),
+        -12px -12px 25px var(--shadow-soft-light);
+}
+
+button:active {
+    transform: translateY(0) translateZ(0px);
+    box-shadow: inset 5px 5px 12px var(--shadow-medium-dark),
+                inset -5px -5px 12px var(--shadow-lighter-light); /* تأثير ضغط للداخل */
+    background: linear-gradient(145deg, #2C3A4B, #3A4C60); /* تبديل التدرج للداخل */
+}
+
+/* أنواع الأزرار المخصصة */
+.cta-button { 
+    background: linear-gradient(145deg, var(--accent-blue), #2A72BB);
+}
+.cta-button:hover {
+    background: linear-gradient(145deg, #2A72BB, var(--accent-blue));
+}
+
+.action-button { 
+    background: linear-gradient(145deg, #388E3C, #2E7D32); /* أخضر غامق */
+}
+.action-button:hover {
+    background: linear-gradient(145deg, #2E7D32, #388E3C);
+}
+
+.secondary-button { 
+    background: linear-gradient(145deg, #5A6268, #495057); /* رمادي أنيق */
+}
+.secondary-button:hover {
+    background: linear-gradient(145deg, #495057, #5A6268);
+}
+
+.reset-button { 
+    background: linear-gradient(145deg, #D32F2F, #B71C1C); /* أحمر غامق ومُشبع */
+}
+.reset-button:hover {
+    background: linear-gradient(145deg, #B71C1C, #D32F2F);
+}
+
+/* حاوية أزرار التحكم باللعبة */
+.game-controls {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* مسافة بين الأزرار */
+    flex-wrap: wrap; /* للسماح بتعدد الأسطر على الشاشات الصغيرة */
+}
+
+
+/* الشاشات وإخفائها/إظهارها */
+.screen {
+    display: none;
+    padding: 30px;
+    animation: slideIn 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateX(50px);
+    transform-origin: center center; /* لضمان دوران سلس */
+}
+
+.screen.active {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(50px) rotateY(-5deg); }
+    to { opacity: 1; transform: translateX(0) rotateY(0deg); }
+}
+
+/* حقول الإدخال */
+.input-section {
+    background: rgba(0, 0, 0, 0.18); /* خلفية شفافة للحقول */
+    border-radius: 20px;
+    padding: 45px;
+    margin-bottom: 55px;
+    box-shadow: 
+        inset 6px 6px 15px var(--shadow-deep-dark),
+        inset -6px -6px 15px var(--shadow-lighter-light);
+}
+
+.input-group {
+    margin-bottom: 35px;
+    text-align: right;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: var(--text-light);
+    font-size: 1.25em;
+}
+
+.input-group input[type="text"] {
+    width: calc(100% - 35px);
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.2em;
+    box-sizing: border-box;
+    background: #23313d; /* خلفية أغمق للحقل */
+    color: var(--text-light);
+    box-shadow: inset 4px 4px 10px var(--shadow-medium-dark),
+                inset -4px -4px 10px var(--shadow-lighter-light);
+    transition: all 0.3s ease;
+}
+
+.input-group input[type="text"]::placeholder {
+    color: var(--text-dark);
+    opacity: 0.7;
+}
+
+.input-group input[type="text"]:focus {
+    outline: none;
+    box-shadow: inset 4px 4px 10px var(--shadow-medium-dark),
+                inset -4px -4px 10px var(--shadow-lighter-light),
+                0 0 0 4px var(--accent-blue); /* إطار تركيز أزرق */
+}
+
+/* عرض النقاط */
+.score-display {
+    display: flex;
+    justify-content: space-around;
+    gap: 45px;
+    margin-bottom: 65px;
+    flex-wrap: wrap;
+}
+
+.team-score-card {
+    flex: 1;
+    min-width: 340px;
+    background: linear-gradient(145deg, #2B3D4F, #3A4C60);
+    border-radius: 30px;
+    padding: 45px 35px;
+    box-shadow: 
+        12px 12px 30px var(--shadow-deep-dark),
+        -12px -12px 30px var(--shadow-soft-light);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.team-score-card:hover {
+    transform: translateY(-12px) translateZ(8px);
+    box-shadow: 
+        18px 18px 45px var(--shadow-deep-dark),
+        -18px -18px 45px var(--shadow-soft-light);
+}
+
+.team-name {
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.team-a-card .team-name { color: #FF7F7F; /* أحمر ناعم */ }
+.team-b-card .team-name { color: #87CEEB; /* أزرق سماوي ناعم */ }
+
+.score-value {
+    font-size: 6.5em;
+    font-weight: 700;
+    margin: 30px 0;
+    color: var(--accent-gold);
+    text-shadow: 0 0 25px rgba(195, 154, 63, 0.9);
+    letter-spacing: 3px;
+}
+
+/* رسائل اللعبة */
+.messages {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin-top: 55px;
+    min-height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0 0 18px rgba(255, 255, 255, 0.4);
+    transition: all 0.5s ease-in-out; /* لتأثير التغيير */
+}
+
+.messages.celebration {
+    color: #A3FFAC; /* أخضر فاتح */
+    text-shadow: 0 0 30px rgba(163, 255, 172, 0.95), 0 0 60px rgba(163, 255, 172, 0.7); /* توهج أكبر */
+    animation: pulse 1.5s infinite alternate; /* تأثير نبض */
+}
+
+.messages.sima {
+    color: #FF99E6; /* بنفسجي فاتح */
+    text-shadow: 0 0 30px rgba(255, 153, 230, 0.95), 0 0 60px rgba(255, 153, 230, 0.7);
+    animation: bounceIn 0.8s ease-out; /* تأثير ارتداد */
+}
+
+.messages.harqa {
+    color: #FFCC99; /* برتقالي فاتح */
+    text-shadow: 0 0 30px rgba(255, 204, 153, 0.95), 0 0 60px rgba(255, 204, 153, 0.7);
+    animation: shake 0.5s ease-in-out; /* تأثير اهتزاز */
+}
+
+/* keyframes للتأثيرات */
+@keyframes pulse {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.05); opacity: 0.9; }
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.1); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+
+/* شبكة أحجار الضومنة */
+.domino-tiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); /* أحجار أكبر قليلاً */
+    gap: 30px;
+    margin-top: 45px;
+    max-height: 650px; /* ارتفاع أقصى مع التمرير */
+    overflow-y: auto;
+    padding: 25px;
+    border-radius: 25px;
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 
+        inset 6px 6px 15px var(--shadow-deep-dark),
+        inset -6px -6px 15px var(--shadow-lighter-light);
+}
+
+/* تصميم حجر الضومنة الواحد (بشكل 3D-ish) */
+.domino-tile {
+    width: 110px;
+    height: 220px; /* ضعف العرض للحجر المستطيل */
+    border: 4px solid var(--tile-border);
+    border-radius: 18px;
+    background: linear-gradient(145deg, var(--tile-bg-light), var(--tile-bg-dark)); /* تدرج رمادي فاتح للحجر */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        6px 6px 15px var(--shadow-medium-dark), /* ظل سفلي */
+        -6px -6px 15px var(--shadow-soft-light), /* ظل علوي */
+        inset 2px 2px 5px var(--shadow-lighter-light), /* إضاءة خفيفة داخلية */
+        inset -2px -2px 5px rgba(0,0,0,0.1); /* ظل داخلي خفيف */
+    user-select: none;
+    position: relative;
+    transform-style: preserve-3d; /* مهم لعمق النقاط */
+}
+
+.domino-tile:hover {
+    transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(-2deg); /* تأثير رفع ودوران خفيف وميلان */
+    box-shadow: 
+        10px 10px 25px var(--shadow-deep-dark),
+        -10px -10px 25px var(--shadow-soft-light);
+}
+
+.domino-tile.selected {
+    border-color: var(--accent-blue);
+    background: linear-gradient(145deg, #E0F7FA, #CFE8FF); /* خلفية زرقاء فاتحة عند التحديد */
+    transform: scale(1.1) rotateX(0deg) rotateY(0deg);
+    box-shadow: 
+        0 0 0 5px var(--accent-blue), /* إطار أزرق ساطع */
+        0 0 30px rgba(74, 144, 226, 0.9), /* توهج أزرق */
+        inset 2px 2px 5px rgba(0, 0, 0, 0.2); /* ظل داخلي عند التحديد */
+}
+
+/* النقاط السوداء (مع تأثير ثلاثي الأبعاد بسيط) */
+.domino-dot {
+    width: 22px; /* نقاط أكبر قليلاً */
+    height: 22px;
+    background-color: var(--dot-color); /* لون أزرق داكن جداً للنقاط */
+    border-radius: 50%;
+    margin: 0; /* تم إزالة الهامش لتموضع أدق بالـ Grid */
+    box-shadow: 
+        inset 3px 3px 7px var(--shadow-medium-dark), /* ظل داخلي للنقطة */
+        inset -3px -3px 7px var(--shadow-lighter-light),
+        2px 2px 5px rgba(0, 0, 0, 0.4); /* ظل خارجي خفيف للنقطة */
+    transform: translateZ(8px); /* إعطاء النقطة عمق */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    flex-shrink: 0; /* لمنع النقاط من الانكماش */
+}
+
+.domino-tile.selected .domino-dot {
+    background-color: #1A1A1A; /* النقاط تصبح أغمق عند التحديد */
+    transform: translateZ(10px); /* تبرز أكثر عند التحديد */
+}
+
+.domino-divider {
+    width: 90%; /* زدت العرض قليلاً */
+    height: 6px; /* فاصل أسمك وبارز */
+    background-color: var(--dot-color); /* نفس لون النقاط */
+    border-radius: 3px;
+    margin: 0; /* أزلت الهامش هنا أيضاً لأن dot-row سيتحكم في التباعد */
+    box-shadow: 
+        inset 3px 3px 8px var(--shadow-medium-dark),
+        inset -3px -3px 8px var(--shadow-lighter-light);
+    transform: translateZ(5px); /* إعطاء الفاصل عمق */
+    /* ضمان أن الفاصل يظهر فوق العناصر الأخرى */
+    position: relative; 
+    z-index: 2; 
+}
+
+.domino-tile .dot-row {
+    display: grid; /* استخدام grid لتموضع دقيق */
+    width: 100%;
+    height: 100%; /* يجب أن تأخذ الارتفاع الكامل لنصف الحجر */
+    box-sizing: border-box;
+    padding: 10px 15px; /* بادينج داخلي لإبعاد النقاط عن الحواف */
+    position: relative;
+    z-index: 1; 
+    /* هذه الخصائص الافتراضية للـ grid يمكن تجاوزها لاحقاً حسب عدد النقاط */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    place-items: center; /* توسيط العناصر داخل الخلايا */
+}
+
+
+/* أنماط دقيقة لتموضع النقاط داخل الأحجار لتشبه الدومينو الحقيقي تماماً */
+/* اعتماداً على الصورة، سنستخدم grid-template-areas لبعض الترتيبات */
+
+/* النقاط 0: لا يوجد نقاط */
+.domino-tile .dot-row.dots-0 {
+    display: flex; /* لضمان وجود العنصر حتى لو كان فارغاً */
+    justify-content: center;
+    align-items: center;
+}
+
+/* النقاط 1: نقطة واحدة في المنتصف */
+.domino-tile .dot-row.dots-1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    place-items: center; /* توسيط النقطة في المنتصف */
+}
+
+/* النقاط 2: نقطتان قطرياً (أعلى يمين، أسفل يسار) */
+.domino-tile .dot-row.dots-2 {
+    grid-template-areas: 
+        "top-left ."
+        ". ."
+        ". bottom-right";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr; /* ثلاث صفوف للتحكم في التباعد */
+    padding: 10px;
+}
+.domino-tile .dot-row.dots-2 .domino-dot:nth-child(1) { grid-area: top-left; }
+.domino-tile .dot-row.dots-2 .domino-dot:nth-child(2) { grid-area: bottom-right; }
+
+/* النقاط 3: ثلاث نقاط قطرياً (أعلى يسار، منتصف، أسفل يمين) */
+.domino-tile .dot-row.dots-3 {
+    grid-template-areas: 
+        "top-left . ."
+        ". center ."
+        ". . bottom-right";
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding: 10px;
+}
+.domino-tile .dot-row.dots-3 .domino-dot:nth-child(1) { grid-area: top-left; }
+.domino-tile .dot-row.dots-3 .domino-dot:nth-child(2) { grid-area: center; }
+.domino-tile .dot-row.dots-3 .domino-dot:nth-child(3) { grid-area: bottom-right; }
+
+/* النقاط 4: أربع نقاط في الزوايا */
+.domino-tile .dot-row.dots-4 {
+    grid-template-areas: 
+        "top-left top-right"
+        ". ."
+        "bottom-left bottom-right";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 0.5fr 1fr; /* صف وسطي أصغر للحفاظ على المسافات */
+    padding: 10px;
+}
+.domino-tile .dot-row.dots-4 .domino-dot:nth-child(1) { grid-area: top-left; }
+.domino-tile .dot-row.dots-4 .domino-dot:nth-child(2) { grid-area: top-right; }
+.domino-tile .dot-row.dots-4 .domino-dot:nth-child(3) { grid-area: bottom-left; }
+.domino-tile .dot-row.dots-4 .domino-dot:nth-child(4) { grid-area: bottom-right; }
+
+/* النقاط 5: أربع نقاط في الزوايا وواحدة في المنتصف */
+.domino-tile .dot-row.dots-5 {
+    grid-template-areas: 
+        "top-left top-right"
+        "center center" /* النقطة الوسطى تمتد على عمودين */
+        "bottom-left bottom-right";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 0.5fr 1fr;
+    padding: 10px;
+}
+.domino-tile .dot-row.dots-5 .domino-dot:nth-child(1) { grid-area: top-left; }
+.domino-tile .dot-row.dots-5 .domino-dot:nth-child(2) { grid-area: top-right; }
+.domino-tile .dot-row.dots-5 .domino-dot:nth-child(3) { grid-area: center; }
+.domino-tile .dot-row.dots-5 .domino-dot:nth-child(4) { grid-area: bottom-left; }
+.domino-tile .dot-row.dots-5 .domino-dot:nth-child(5) { grid-area: bottom-right; }
+
+/* النقاط 6: ست نقاط (صفان من ثلاث نقاط) */
+.domino-tile .dot-row.dots-6 {
+    grid-template-areas: 
+        "top-left top-right"
+        "middle-left middle-right"
+        "bottom-left bottom-right";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding: 10px;
+}
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(1) { grid-area: top-left; }
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(2) { grid-area: top-right; }
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(3) { grid-area: middle-left; }
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(4) { grid-area: middle-right; }
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(5) { grid-area: bottom-left; }
+.domino-tile .dot-row.dots-6 .domino-dot:nth-child(6) { grid-area: bottom-right; }
+
+
+/* أزرار شاشة اختيار الأحجار */
+.selection-actions {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ---------------------------------------------------- */
+/* استجابة التصميم لجميع الشاشات              */
+/* ---------------------------------------------------- */
+
+/* شاشات كبيرة جداً (أجهزة تلفزيون، شاشات عريضة) */
+@media (min-width: 1400px) {
+    .app-container {
+        max-width: 1200px;
+        padding: 80px 100px;
+    }
+    .app-title { font-size: 4em; }
+    .tagline { font-size: 1.6em; }
+    .section-title { font-size: 3em; }
+    .input-group label { font-size: 1.3em; }
+    .input-group input[type="text"] { padding: 20px; font-size: 1.3em; }
+    button { padding: 22px 50px; font-size: 1.5em; }
+    .score-value { font-size: 7.5em; }
+    .messages { font-size: 3em; }
+    .domino-tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 35px;
+    }
+    .domino-tile { width: 120px; height: 240px; }
+    .domino-dot { width: 24px; height: 24px; }
+    .domino-divider { height: 7px; }
+}
+
+/* شاشات اللابتوب والتابلت الكبيرة (أفقية) */
+@media (max-width: 1200px) {
+    .app-container {
+        padding: 50px 60px;
+    }
+    .app-title { font-size: 3em; }
+    .tagline { font-size: 1.3em; }
+    .section-title { font-size: 2.4em; }
+    button { padding: 18px 40px; font-size: 1.3em; }
+    .score-value { font-size: 6em; }
+    .messages { font-size: 2.5em; }
+    .domino-tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 25px;
+    }
+    .domino-tile { width: 100px; height: 200px; }
+    .domino-dot { width: 20px; height: 20px; }
+    .domino-divider { height: 6px; }
+}
+
+/* شاشات التابلت (عمودية) واللابتوب الصغيرة */
+@media (max-width: 992px) {
+    .app-container {
+        padding: 40px 50px;
+    }
+    .app-title { font-size: 2.8em; }
+    .tagline { font-size: 1.2em; }
+    .section-title { font-size: 2.2em; }
+    .score-display { flex-direction: column; gap: 30px; } /* الفريقان فوق بعض */
+    .team-score-card { min-width: unset; width: 90%; margin: 0 auto; } /* توسيط الفريقين */
+}
+
+/* شاشات الجوال الكبيرة (مثل iPhone Plus/Max, Galaxy Note) */
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .app-container {
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 95%;
+    }
+    .app-title { font-size: 2.2em; gap: 8px; }
+    .logo-icon { font-size: 0.7em; }
+    .tagline { font-size: 1em; margin-bottom: 30px; }
+    .section-title { font-size: 1.8em; }
+    .input-section { padding: 25px; margin-bottom: 30px; }
+    .input-group label { font-size: 1em; margin-bottom: 10px;}
+    .input-group input[type="text"] { padding: 12px; font-size: 1em; width: calc(100% - 24px); }
+    button { padding: 12px 25px; font-size: 1em; margin: 10px; border-radius: 12px; }
+    .score-value { font-size: 4.5em; margin: 20px 0;}
+    .messages { font-size: 2em; margin-top: 30px; min-height: 40px; }
+    .domino-tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 15px;
+        max-height: 450px;
+        padding: 15px;
+    }
+    .domino-tile { width: 80px; height: 160px; padding: 10px 0; border-radius: 12px; border-width: 3px; }
+    .domino-dot { width: 16px; height: 16px; transform: translateZ(6px); }
+    .domino-divider { height: 4px; margin: 8px 0; transform: translateZ(4px); }
+    .selection-actions { gap: 15px; }
+    .game-controls button { margin: 8px; } /* تقليل الهامش بين الأزرار */
+}
+
+/* شاشات الجوال الصغيرة جداً (مثل iPhone SE) */
+@media (max-width: 480px) {
+    .app-container { padding: 20px; }
+    .app-title { font-size: 1.8em; gap: 5px;}
+    .tagline { font-size: 0.9em; margin-bottom: 20px;}
+    .section-title { font-size: 1.5em; }
+    .input-section { padding: 20px; margin-bottom: 25px; }
+    .input-group label { font-size: 0.9em; }
+    .input-group input[type="text"] { padding: 10px; font-size: 0.9em; }
+    button { padding: 10px 20px; font-size: 0.9em; margin: 6px; }
+    .score-value { font-size: 3.5em; }
+    .messages { font-size: 1.6em; margin-top: 25px; min-height: 35px; }
+    .domino-tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(65px, 1fr)); /* أحجار أصغر قليلاً */
+        gap: 10px;
+        max-height: 380px;
+        padding: 10px;
+    }
+    .domino-tile { width: 65px; height: 130px; padding: 8px 0; border-width: 2px;}
+    .domino-dot { width: 14px; height: 14px; transform: translateZ(5px); }
+    .domino-divider { height: 3px; margin: 6px 0; transform: translateZ(3px); }
+    .game-controls button { margin: 6px; }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة نقاط الضومنة | احترافية</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="start-screen" class="screen active">
+            <h1 class="app-title">حاسبة نقاط الضومنة <span class="logo-icon">🁫</span></h1>
+            <p class="tagline">مع تحيات ابو داحم</p>
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="teamA-name-input">اسم الفريق الأول:</label>
+                    <input type="text" id="teamA-name-input" placeholder=" ">
+                </div>
+                <div class="input-group">
+                    <label for="teamB-name-input">اسم الفريق الثاني:</label>
+                    <input type="text" id="teamB-name-input" placeholder="">
+                </div>
+                <button id="start-game-btn" class="cta-button">بدء اللعب</button>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <h1 class="app-title">النتيجة الحالية <span class="logo-icon">📊</span></h1>
+
+            <div class="score-display">
+                <div class="team-score-card team-a-card">
+                    <h2 id="teamA-display-name" class="team-name">الفريق الأول</h2>
+                    <p class="score-value" id="teamA-score-value">0</p>
+                    <button id="add-points-teamA" class="action-button">تسجيل نقاط للفريق الأول</button>
+                </div>
+
+                <div class="team-score-card team-b-card">
+                    <h2 id="teamB-display-name" class="team-name">الفريق الثاني</h2>
+                    <p class="score-value" id="teamB-score-value">0</p>
+                    <button id="add-points-teamB" class="action-button">تسجيل نقاط للفريق الثاني</button>
+                </div>
+            </div>
+
+            <div id="game-messages" class="messages"></div>
+
+            <div class="game-controls">
+                <button id="reset-scores-btn" class="secondary-button">صفر العداد </button>
+                <button id="reset-game-btn" class="reset-button">  تغيير الفرق</button>
+            </div>
+        </div>
+
+        <div id="tile-selection-screen" class="screen">
+            <h2 class="section-title">اختر أحجار الفريق الخاسر: <span id="losing-team-name-display" class="highlight-name"></span></h2>
+            <div id="domino-tiles-container" class="domino-tiles-grid">
+                </div>
+            <div class="selection-actions">
+                <button id="calculate-points-btn" class="cta-button">احسب وأضف النقاط</button>
+                <button id="cancel-selection-btn" class="secondary-button">رجوع</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
