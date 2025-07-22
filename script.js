@@ -284,7 +284,7 @@ function checkGameStatus(prevTeamAScore, prevTeamBScore) {
 
     if (isTeamAWinning) {
         if (teamBScore === 0) {
-            message = `صيمة! ${teamAName} فاز!`;
+            message = `صيمة!`;
             messageClass += ' sima';
         } else {
             message = `ألف مبروك ${teamAName}!  !`;
@@ -292,7 +292,7 @@ function checkGameStatus(prevTeamAScore, prevTeamBScore) {
         }
     } else if (isTeamBWinning) {
         if (teamAScore === 0) {
-            message = `صيمة! ${teamBName} فاز!`;
+            message = `صيمة! `;
             messageClass += ' sima';
         } else {
             message = `ألف مبروك ${teamBName}!  !`;
@@ -304,10 +304,10 @@ function checkGameStatus(prevTeamAScore, prevTeamBScore) {
         const harqaConditionB = (prevTeamBScore === 10 && prevTeamAScore === 0 && teamAScore > 0);
 
         if (harqaConditionA) {
-            message = `حرقة! ${teamAName}    !`;
+            message = `حرقة! `;
             messageClass += ' harqa';
         } else if (harqaConditionB) {
-            message = `حرقة! ${teamBName}    !`;
+            message = `حرقة!`;
             messageClass += ' harqa';
         }
     }
